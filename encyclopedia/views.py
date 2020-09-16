@@ -3,6 +3,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from . import util
+import sys
+
 
 class NewEntryForm(forms.Form):
     title = forms.CharField(label="Title:")
@@ -19,13 +21,18 @@ def display_entry(request, title):
        "content": util.get_entry(title)
     })
 
+def edit_page(request):
+        return render(request, "encyclopedia/edit_page.html")     
+
 def create_page(request):
     if request.method == "POST":
         form = NewEntryForm(request.POST)
+        all_titles = util.list_entries()
         if form.is_valid():
             title = form.cleaned_data['title']
             content = form.cleaned_data['content']
-            util.save_entry(title, content)
+            if not title.capitalize() in all_titles:
+                util.save_entry(title, content)
             return HttpResponseRedirect(f'wiki/{title}')
         else:
             return render(request, "encyclopedia/create_page.html", {
@@ -33,4 +40,5 @@ def create_page(request):
             })
     else:
         return render(request, "encyclopedia/create_page.html", {
-       "form": NewEntryForm()})       
+       "form": NewEntryForm()
+       })
