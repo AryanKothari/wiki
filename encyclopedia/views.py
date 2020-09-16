@@ -10,6 +10,10 @@ class NewEntryForm(forms.Form):
     title = forms.CharField(label="Title:")
     content = forms.CharField(label="Content:", widget=forms.Textarea(attrs={"rows":10, "cols":80}))
 
+class EditEntryForm(forms.Form):
+    content_new = forms.CharField(label="Content:", widget=forms.Textarea(attrs={"rows":10, "cols":80}))
+
+
 def index(request):
     return render(request, "encyclopedia/index.html", {
         "entries": util.list_entries()
@@ -21,10 +25,12 @@ def display_entry(request, title):
        "content": util.get_entry(title)
     })
 
-def edit_page(request):
-        return render(request, "encyclopedia/edit_page.html")     
+def edit_entry(request, title):
+        return render(request, "encyclopedia/edit_entry.html", {
+            "content_current": util.get_entry(title)
+        })
 
-def create_page(request):
+def create_entry(request):
     if request.method == "POST":
         form = NewEntryForm(request.POST)
         all_titles = util.list_entries()
@@ -35,10 +41,10 @@ def create_page(request):
                 util.save_entry(title, content)
             return HttpResponseRedirect(f'wiki/{title}')
         else:
-            return render(request, "encyclopedia/create_page.html", {
+            return render(request, "encyclopedia/create_entry.html", {
                 "form": form
             })
     else:
-        return render(request, "encyclopedia/create_page.html", {
+        return render(request, "encyclopedia/create_entry.html", {
        "form": NewEntryForm()
        })
