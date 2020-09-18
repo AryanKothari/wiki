@@ -29,10 +29,7 @@ def edit_entry(request, title):
             content_new = form.cleaned_data['content_new']
             title = title.capitalize()
             util.save_entry(title, content_new)
-            return render(request, "encyclopedia/display_entry.html", {
-                "title": title,
-                "content": util.get_entry(title)
-            })
+            return HttpResponseRedirect(f'/wiki/{title}')
         else:
             return render(request, "encyclopedia/edit_entry.html", {
                 "form": form,
