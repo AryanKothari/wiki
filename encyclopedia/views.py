@@ -1,23 +1,20 @@
-from django import forms
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from . import util
+import random
 import sys
+from .forms import NewEntryForm, EditEntryForm
 
-
-class NewEntryForm(forms.Form):
-    title = forms.CharField(label="Title:")
-    content = forms.CharField(label="Content:", widget=forms.Textarea(attrs={"rows":10, "cols":80}))
-
-class EditEntryForm(forms.Form):
-    content_new = forms.CharField(label="Content:", widget=forms.Textarea(attrs={"rows":10, "cols":80}))
 
 
 def index(request):
+    all_entries = util.list_entries()
+    rand_int = random.randint(0,len(all_entries)-1)
     return render(request, "encyclopedia/index.html", {
-        "entries": util.list_entries()
-    })
+        "entries": util.list_entries(),
+        "rand_title": all_entries[rand_int],
+        })
 
 def display_entry(request, title):
     return render(request, "encyclopedia/display_entry.html", {
@@ -26,8 +23,26 @@ def display_entry(request, title):
     })
 
 def edit_entry(request, title):
-        return render(request, "encyclopedia/edit_entry.html", {
-            "content_current": util.get_entry(title)
+    if request.method == "POST":
+        form = EditEntryForm(request.POST)
+        if form.is_valid():
+            content_new = form.cleaned_data['content_new']
+            title = title.capitalize()
+            util.save_entry(title, content_new)
+            return render(request, "encyclopedia/display_entry.html", {
+                "title": title,
+                "content": util.get_entry(title)
+            })
+        else:
+            return render(request, "encyclopedia/edit_entry.html", {
+                "form": form,
+                "content_current": util.get_entry(title),
+            })
+    else:
+         return render(request, "encyclopedia/edit_entry.html", {
+             "content_current": util.get_entry(title),
+             "form": EditEntryForm({'content_new': util.get_entry(title)}),
+             "title": title.capitalize()
         })
 
 def create_entry(request):
@@ -48,3 +63,6 @@ def create_entry(request):
         return render(request, "encyclopedia/create_entry.html", {
        "form": NewEntryForm()
        })
+
+def random_page(request):
+    return True
