@@ -12,8 +12,8 @@
         <div class="row">
             <div class="sidebar col-lg-2 col-md-3">
                 <h2>Wiki</h2>
-                <form>
-                    <input class="search" type="text" name="q" placeholder="Search Encyclopedia" method="POST">
+                <form action="{% url 'encyclopedia:search_results' %}" method="GET">
+                    <input class="search" type="text" name="q" placeholder="Search Encyclopedia">
                 </form>
                 <div>
                     <a href="{% url 'encyclopedia:index' %}">Home</a>
@@ -22,7 +22,7 @@
                     <a href="{% url 'encyclopedia:create_entry' %}">Create New Entry</a>
                 </div>
                 <div>
-                    <a href="wiki/{{rand_title}}">Random Page</a>
+                    <a href="{% url 'encyclopedia:random_entry' %}">Random Page</a>
                 </div>
                 {% block nav %}
                 {% endblock %}

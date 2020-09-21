@@ -7,6 +7,5 @@
 {% block body %}
     <h1> {{ title }}</h1>
     <a href="{{title}}/edit" style="float: right;"> Edit Entry </a>
-    {{ content }}
-
+    {{ content|safe }}
 {% endblock %}

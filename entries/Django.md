@@ -1,5 +1,4 @@
-this is it chief for sureaaa NOOO ouiiaaaaaalajkkakaa
 
-wo]
-
-weeeeee
+- George Washington
+- John Adams
+- Thomas Jefferson
